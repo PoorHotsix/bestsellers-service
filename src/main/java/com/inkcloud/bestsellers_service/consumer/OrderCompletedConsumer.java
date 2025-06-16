@@ -25,7 +25,7 @@ public class OrderCompletedConsumer {
     public void consume(String eventJson) {
         try {
             FromOrderEvent event = objectMapper.readValue(eventJson, FromOrderEvent.class);
-            LocalDate saleDate = event.getOrderedAt().toLocalDate();
+            LocalDate saleDate = LocalDate.now();
 
             log.info("[Kafka] 주문 이벤트 수신 - 도서 수: {}, 주문일자: {}", 
                 event.getDtos().size(), saleDate);

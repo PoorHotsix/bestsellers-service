@@ -16,7 +16,5 @@ import lombok.NoArgsConstructor;
 public class FromOrderEvent {
 
     private List<OrderItemDto> dtos;
-    
-    private LocalDateTime orderedAt;
 
 }
