@@ -17,7 +17,8 @@ import com.inkcloud.bestsellers_service.repository.BestsellerBookRepository;
 import com.inkcloud.bestsellers_service.repository.WeeklyBookSalesRepository;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BestsellerQueryService {
@@ -30,7 +31,7 @@ public class BestsellerQueryService {
 
         LocalDate startDate;
         if ("daily".equalsIgnoreCase(period)) {
-            startDate = today;
+            startDate = today.minusDays(1);
         } else if ("weekly".equalsIgnoreCase(period)) {
             startDate = today.minusDays(6);
         } else {
@@ -38,7 +39,7 @@ public class BestsellerQueryService {
         }
 
         // 1. 기간 내 모든 판매 이력 조회
-        List<WeeklyBookSales> allSales = salesRepository.findBetweenDates(startDate, today);
+        List<WeeklyBookSales> allSales = salesRepository.findBetweenDates(startDate, today.plusDays(1));
 
         // 2. bookId 기준으로 수량 합산
         Map<Long, Integer> quantityMap = new HashMap<>();
