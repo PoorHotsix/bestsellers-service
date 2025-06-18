@@ -1,6 +1,5 @@
 package com.inkcloud.bestsellers_service.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
