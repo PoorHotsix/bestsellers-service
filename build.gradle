@@ -37,6 +37,7 @@ dependencies {
 	// DynamoDB
 	implementation 'software.amazon.awssdk:dynamodb:2.25.24'
 	implementation 'software.amazon.awssdk:dynamodb-enhanced:2.20.143'
+	implementation 'software.amazon.awssdk:sts'
 
 	// Kafka 기본 의존성
 	implementation 'org.springframework.kafka:spring-kafka'
