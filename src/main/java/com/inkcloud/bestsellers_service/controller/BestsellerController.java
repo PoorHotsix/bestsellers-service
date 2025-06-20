@@ -11,7 +11,9 @@ import com.inkcloud.bestsellers_service.dto.BestsellerResponseDto;
 import com.inkcloud.bestsellers_service.service.BestsellerQueryService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/bestsellers")
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class BestsellerController {
 
     @GetMapping
     public List<BestsellerResponseDto> getBestsellers(@RequestParam(defaultValue = "daily") String period) {
+        log.info("daily request!!!");
         return bestsellerQueryService.getTopBestsellers(period);
     }
 }
