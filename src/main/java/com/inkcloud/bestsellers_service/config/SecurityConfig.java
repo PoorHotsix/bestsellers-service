@@ -1,5 +1,3 @@
-// com.inkcloud.bestseller_service.config.SecurityConfig
-
 package com.inkcloud.bestsellers_service.config;
 
 import org.springframework.context.annotation.Bean;
