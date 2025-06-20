@@ -18,6 +18,7 @@ import com.inkcloud.bestsellers_service.repository.WeeklyBookSalesRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,17 +39,23 @@ public class BestsellerQueryService {
             throw new IllegalArgumentException("지원하지 않는 기간: " + period);
         }
 
-        // 1. 기간 내 모든 판매 이력 조회
-        List<WeeklyBookSales> allSales = salesRepository.findBetweenDates(startDate, today.plusDays(1));
+        // 도서 메타 테이블에서 bookId 목록 조회
+        List<Long> soldBookIds = bookRepository.findAllBookIds();
+        if (soldBookIds.isEmpty()) {
+            log.warn("판매된 도서 ID 목록이 비어있습니다.");
+            return List.of();
+        }
 
-        // 2. bookId 기준으로 수량 합산
+        // 해당 bookId들에 대한 판매 이력 조회
+        List<WeeklyBookSales> allSales = salesRepository.findBetweenDates(startDate, today.plusDays(1), soldBookIds);
+
+        // 수량 집계
         Map<Long, Integer> quantityMap = new HashMap<>();
         for (WeeklyBookSales sale : allSales) {
             quantityMap.merge(sale.getBookId(), sale.getTotalSoldQuantity(), Integer::sum);
             log.info("판매 이력 - bookId: {}, 수량: {}", sale.getBookId(), sale.getTotalSoldQuantity());
         }
 
-        // 3. bookId 기준으로 메타 정보 조회 + DTO 변환
         return quantityMap.entrySet().stream()
                 .map(entry -> {
                     BestsellerBook book = bookRepository.findByBookId(entry.getKey());

@@ -1,5 +1,8 @@
 package com.inkcloud.bestsellers_service.repository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Repository;
 
 import com.inkcloud.bestsellers_service.domain.BestsellerBook;
@@ -32,5 +35,14 @@ public class BestsellerBookRepository {
         return table.getItem(Key.builder()
                 .partitionValue(bookId)
                 .build());
+    }
+
+    public List<Long> findAllBookIds() {
+        DynamoDbTable<BestsellerBook> table = enhancedClient.table("bestsellers",
+                TableSchema.fromBean(BestsellerBook.class));
+
+        return table.scan().items().stream()
+                .map(BestsellerBook::getBookId)
+                .collect(Collectors.toList());
     }
 }

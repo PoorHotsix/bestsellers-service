@@ -40,19 +40,17 @@ public class WeeklyBookSalesRepository {
         ));
     }
 
-    public List<WeeklyBookSales> findBetweenDates(LocalDate from, LocalDate to) {
-
+    public List<WeeklyBookSales> findBetweenDates(LocalDate from, LocalDate to, List<Long> bookIds) {
         DynamoDbTable<WeeklyBookSales> table = enhancedClient.table("weekly_book_sales",
                 TableSchema.fromBean(WeeklyBookSales.class));
 
         List<WeeklyBookSales> result = new ArrayList<>();
 
-        for (long bookId = 1; bookId <= 99999L; bookId++) {
+        for (Long bookId : bookIds) {
             Key keyFrom = Key.builder()
                     .partitionValue(bookId)
                     .sortValue(from.toString())
                     .build();
-
             Key keyTo = Key.builder()
                     .partitionValue(bookId)
                     .sortValue(to.toString())
@@ -67,7 +65,7 @@ public class WeeklyBookSalesRepository {
                     .collect(Collectors.toList());
 
             if (!sales.isEmpty()) {
-                log.info("✅ 판매 이력 발견 - bookId: {}, 개수: {}", bookId, sales.size());
+                log.info("판매 이력 발견 - bookId: {}, 개수: {}", bookId, sales.size());
                 result.addAll(sales);
             }
         }
