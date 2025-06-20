@@ -31,13 +31,15 @@ aws:
     # secret-key: ${AWS_SECRET_ACCESS_KEY}
     
 # 로깅 설정
-logging:  
+logging:
   level:
-    root: info
-    org.springframework.security: DEBUG
-    org.hibernate.SQL: debug
-    org.hibernate.orm.jdbc.bind: trace
-    com.mzc.review_service: INFO
+    "[org.springframework.web.servlet.DispatcherServlet]": debug  # 요청 매핑 로그
+    "[org.springframework.security.web]": debug                   # 시큐리티 필터 체인 로그
+    "[com.inkcloud.order_service]": debug                        # 애플리케이션 로그
+    "[org.springframework.web.filter.CommonsRequestLoggingFilter]": debug  # 요청 로그
+    "[org.springframework.security.web.authentication]": debug
+    "[org.springframework.security.oauth2.server.resource]": debug
+    "[org.springframework.security.oauth2.jwt]": debug
 
 # Eureka-Server 에 자가 등록 설정
 # eureka:
