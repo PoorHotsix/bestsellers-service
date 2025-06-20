@@ -45,13 +45,17 @@ public class BestsellerQueryService {
         Map<Long, Integer> quantityMap = new HashMap<>();
         for (WeeklyBookSales sale : allSales) {
             quantityMap.merge(sale.getBookId(), sale.getTotalSoldQuantity(), Integer::sum);
+            log.info("판매 이력 - bookId: {}, 수량: {}", sale.getBookId(), sale.getTotalSoldQuantity());
         }
 
         // 3. bookId 기준으로 메타 정보 조회 + DTO 변환
         return quantityMap.entrySet().stream()
                 .map(entry -> {
                     BestsellerBook book = bookRepository.findByBookId(entry.getKey());
-                    if (book == null) return null;
+                    if (book == null) {
+                        log.warn("도서 정보 없음 - bookId: {}", entry.getKey());
+                        return null;
+                    }
 
                     return BestsellerResponseDto.builder()
                             .bookId(book.getBookId())

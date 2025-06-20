@@ -3,12 +3,14 @@ package com.inkcloud.bestsellers_service.repository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
 import com.inkcloud.bestsellers_service.domain.WeeklyBookSales;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
@@ -16,6 +18,7 @@ import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class WeeklyBookSalesRepository {
@@ -59,9 +62,14 @@ public class WeeklyBookSalesRepository {
 
             PageIterable<WeeklyBookSales> pages = table.query(r -> r.queryConditional(condition));
 
-            pages.stream()
-                    .flatMap(page -> page.items().stream())  // 명시적으로 작성
-                    .forEach(result::add);
+            List<WeeklyBookSales> sales = pages.stream()
+                    .flatMap(page -> page.items().stream())
+                    .collect(Collectors.toList());
+
+            if (!sales.isEmpty()) {
+                log.info("✅ 판매 이력 발견 - bookId: {}, 개수: {}", bookId, sales.size());
+                result.addAll(sales);
+            }
         }
 
         return result;
